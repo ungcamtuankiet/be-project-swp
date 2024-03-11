@@ -28,8 +28,8 @@ namespace be_artwork_sharing_platform.Core.Services
                 {
                     Id = a.Id,
                     User_Id = a.User_Id,
-                    User_Name = a.User_Name,
-                    Name = a.User_Name,
+                    Full_Name = a.Full_Name,
+                    Name = a.Name,
                     Description = a.Description,
                     Url_Image = a.Url_Image,
                     Price = a.Price,
@@ -64,7 +64,7 @@ namespace be_artwork_sharing_platform.Core.Services
                 else if (searchBy.Equals("user_name"))
                     if (!string.IsNullOrEmpty(search))
                     {
-                        artworks = artworks.Where(a => a.User_Name.Contains(search));
+                        artworks = artworks.Where(a => a.Full_Name.Contains(search));
                     }
             }
             if (from.HasValue)
@@ -96,17 +96,51 @@ namespace be_artwork_sharing_platform.Core.Services
             return artworks.ToList();
         }
 
-        public async Task<IEnumerable<Artwork>> GetArtworkByUserId(string user_Id)
+        public async Task<IEnumerable<ArtworkDto>> GetArtworkByUserId(string user_Id)
         {
-            var artworks = _context.Artworks.Where(a => a.User_Id == user_Id);
-            if (artworks is null)
-                return null;
-            return artworks.ToList();
+            var artworks = _context.Artworks.Where(a => a.User_Id == user_Id)
+                .Select(a => new ArtworkDto
+                {
+                    Id = a.Id,
+                    User_Id = a.User_Id,
+                    Full_Name = a.Full_Name,
+                    Name = a.Name,
+                    Description = a.Description,
+                    Url_Image = a.Url_Image,
+                    Price = a.Price,
+                    CreatedAt = a.CreatedAt,
+                    UpdatedAt = a.UpdatedAt,
+                    IsActive = a.IsActive,
+                    IsDeleted = a.IsDeleted,
+                }).ToList();
+            return artworks;
         }
 
         public async Task<Artwork> GetById(long id)
         {
-            return _context.Artworks.Find(id) ?? throw new Exception("Artwork not found");
+            var artwork = _context.Artworks.FirstOrDefault(a => a.Id == id);
+            if(artwork != null)
+            {
+                var artworkDto = new ArtworkDto
+                {
+                    Id = artwork.Id,
+                    User_Id = artwork.User_Id,
+                    Full_Name = artwork.Full_Name,
+                    Name = artwork.Name,
+                    Description = artwork.Description,
+                    Url_Image = artwork.Url_Image,
+                    Price = artwork.Price,
+                    CreatedAt = artwork.CreatedAt,
+                    UpdatedAt = artwork.UpdatedAt,
+                    IsActive = artwork.IsActive,
+                    IsDeleted = artwork.IsDeleted
+                };
+                return artwork;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task CreateArtwork(CreateArtwork artworkDto, string user_Id, string user_Name)
@@ -114,7 +148,7 @@ namespace be_artwork_sharing_platform.Core.Services
             var artwork = new Artwork
             {
                 User_Id = user_Id,
-                User_Name = user_Name,
+                Full_Name = user_Name,
                 Category_Name = artworkDto.Category_Name,
                 Name = artworkDto.Name,
                 Description = artworkDto.Description,
@@ -128,7 +162,7 @@ namespace be_artwork_sharing_platform.Core.Services
 
         public int Delete(long id)
         {
-            var artwork = _context.Artworks.Find(id) ?? throw new Exception("Artwork not found");
+            var artwork = _context.Artworks.FirstOrDefault(a => a.Id == id);
             _context.Remove(artwork);
             return _context.SaveChanges();
         }

@@ -10,7 +10,7 @@ namespace be_artwork_sharing_platform.Core.Interfaces
         Task<IEnumerable<ArtworkDto>> GetAll();
         Task<IEnumerable<Artwork>> SearchArtwork(string? search, string? searchBy, double? from, double? to, string? sortBy);
         Task<Artwork> GetById(long id);
-        Task<IEnumerable<Artwork>> GetArtworkByUserId(string user_Id);
+        Task<IEnumerable<ArtworkDto>> GetArtworkByUserId(string user_Id);
         Task CreateArtwork(CreateArtwork artworkDto, string user_Id, string user_Name);
         int Delete(long id);
         Task UpdateArtwork(long id, UpdateArtwork updateArtwork);

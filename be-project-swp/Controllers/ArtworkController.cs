@@ -8,7 +8,9 @@ using be_artwork_sharing_platform.Core.Entities;
 using be_artwork_sharing_platform.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.WebSockets;
 
 namespace be_artwork_sharing_platform.Controllers
@@ -59,8 +61,9 @@ namespace be_artwork_sharing_platform.Controllers
         {
             string userName = HttpContext.User.Identity.Name;
             string userId = await _authService.GetCurrentUserId(userName);
-            var artworks = _artworkService.GetArtworkByUserId(userId);
-            return Ok(_mapper.Map<List<ArtworkDto>>(artworks));
+            var artworks = await _artworkService.GetArtworkByUserId(userId);
+            if (artworks is null) return null;
+            return Ok(artworks);
 
         }
 
@@ -80,7 +83,7 @@ namespace be_artwork_sharing_platform.Controllers
                     });
                 else
                 {
-                    return Ok(_mapper.Map<ArtworkDto>(artwork));
+                    return Ok(artwork);
                 }
             }
             catch
@@ -100,13 +103,13 @@ namespace be_artwork_sharing_platform.Controllers
             {
                 string userName = HttpContext.User.Identity.Name;
                 string userId = await _authService.GetCurrentUserId(userName);
-                string userNameCurrent = await _authService.GetCurrentUserName(userName);
-                await _artworkService.CreateArtwork(artworkDto, userId, userNameCurrent);
+                string userFullNameCurrent = await _authService.GetCurrentFullName(userName);
+                await _artworkService.CreateArtwork(artworkDto, userId, userFullNameCurrent);
                 await _logService.SaveNewLog(userName, "Create New Artwork");
                 return Ok(new GeneralServiceResponseDto()
                 {
                     IsSucceed = true,
-                    StatusCode = 203,
+                    StatusCode = 204,
                     Message = "Create new Artwork Successfully"
                 });
             }
@@ -137,17 +140,17 @@ namespace be_artwork_sharing_platform.Controllers
                 }
                 else
                 {
-                    return BadRequest(new GeneralServiceResponseDto
+                    return NotFound(new GeneralServiceResponseDto
                     {
                         IsSucceed = true,
-                        StatusCode = 400,
-                        Message = "Delete Artwork Failed"
+                        StatusCode = 404,
+                        Message = "Artwork Not Found"
                     });
                 }
             }
             catch
             {
-                return BadRequest("Somethong wrong");
+                return BadRequest("Delete Failed");
             }
         }
 
@@ -167,7 +170,7 @@ namespace be_artwork_sharing_platform.Controllers
             }
             catch
             {
-                return BadRequest();
+                return BadRequest("Update Failed");
             }
         }
     }
