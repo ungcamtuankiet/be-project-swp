@@ -30,7 +30,7 @@ namespace be_artwork_sharing_platform.Core.Services
                         Favourite_Id = f.Id,
                         Artwork_Id = f.Artworks.Id,
                         Category_Name = f.Artworks.Category_Name,
-                        User_Name = f.Artworks.User_Name,
+                        Full_Name = f.Artworks.Full_Name,
                         Name = f.Artworks.Name,
                         Description = f.Artworks.Description,
                         Url_Image = f.Artworks.Url_Image,
