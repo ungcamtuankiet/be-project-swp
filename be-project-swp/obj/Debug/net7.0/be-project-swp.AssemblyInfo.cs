@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("be-project-swp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0704e86b4410b7d6af75390ef5978513d41ab630")]
 [assembly: System.Reflection.AssemblyProductAttribute("be-project-swp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("be-project-swp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
