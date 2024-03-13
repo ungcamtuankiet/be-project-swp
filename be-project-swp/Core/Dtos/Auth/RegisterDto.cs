@@ -12,7 +12,7 @@ namespace be_artwork_sharing_platform.Core.Dtos.Auth
         [Required(ErrorMessage = "UserName is required")]
         public string UserName { get; set; }
         [Required]
-        [StringLength(30)]
+        [StringLength(50)]
         [RegularExpression(RegexConst.EMAIL, ErrorMessage = "Invalid email address")]
         public string Email { get; set; }
 

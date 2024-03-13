@@ -12,6 +12,9 @@ using System;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Collections.Generic;
+using System.Net.Mail;
+using be_project_swp.Core.Interfaces;
+using be_project_swp.Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -120,7 +123,6 @@ app.UseCors(c => c.SetIsOriginAllowed(isOriginAllowed => true)
 .AllowCredentials().AllowAnyHeader().AllowAnyMethod());
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 

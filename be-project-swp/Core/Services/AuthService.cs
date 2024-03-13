@@ -10,8 +10,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
+using be_project_swp.Core.Entities;
 
 namespace be_artwork_sharing_platform.Core.Services
 {
@@ -75,6 +78,7 @@ namespace be_artwork_sharing_platform.Core.Services
                     StatusCode = 400,
                     Message = "Email Already Exist"
                 };
+
             ApplicationUser newUser = new ApplicationUser()
             {
                 FullName = registerDto.FullName,
@@ -84,6 +88,7 @@ namespace be_artwork_sharing_platform.Core.Services
                 Address = registerDto.Address,
                 SecurityStamp = Guid.NewGuid().ToString()
             };
+
             var createUserResult = await _userManager.CreateAsync(newUser, registerDto.Password);
 
             if (!createUserResult.Succeeded)
@@ -104,7 +109,6 @@ namespace be_artwork_sharing_platform.Core.Services
             //Add a Default Customer Role to users
             await _userManager.AddToRoleAsync(newUser, StaticUserRole.CREATOR);
             await _logService.SaveNewLog(newUser.UserName, "Register to WebSite");
-
             return new GeneralServiceResponseDto()
             {
                 IsSucceed = true,
@@ -249,6 +253,11 @@ namespace be_artwork_sharing_platform.Core.Services
             return token;
         }
 
+        public Task<ApplicationUser?> GetUserByEmailAsync(string email)
+        {
+            return _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
         public async Task<string> GetCurrentUserId(string username)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
@@ -273,6 +282,14 @@ namespace be_artwork_sharing_platform.Core.Services
             return null;
         }
 
+        public async Task<string> GetCurrentFullNameByUserId(string userId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if(user is not null)
+                return user.FullName;
+            return null;
+        }
+
         public async Task<string> GetPasswordCurrentUserName(string username)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
@@ -289,10 +306,8 @@ namespace be_artwork_sharing_platform.Core.Services
             return false;
         }
 
-        //GeneralUserInfoObject
         private UserInfoResult GeneralUserInfoObject(ApplicationUser user, IList<string> roles)
         {
-            // Instead of this, You can use Automapper packages. But i don't want it in this project
             return new UserInfoResult()
             {
                 Id = user.Id,
@@ -304,6 +319,31 @@ namespace be_artwork_sharing_platform.Core.Services
                 CreatedAt = user.CreatedAt,
                 Roles = roles
             };
+        }
+
+        public string GenerateCode()
+        {
+            Random random = new Random();
+            const string chars = "0123456789";
+            return new string(Enumerable.Repeat(chars, 6)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        public void SendResetCodeEmail(string email, string resetCode)
+        {
+            MailMessage mail = new MailMessage();
+            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com");
+
+            smtpClient.Port = 465;
+            smtpClient.Credentials = new NetworkCredential("ungcamtuankiet94@gmail.com", "Kiet0764285199");
+            smtpClient.EnableSsl = true;
+
+            mail.From = new MailAddress("ungcamtuankiet94@gmail.com");
+            mail.To.Add(email);
+            mail.Subject = "Reset Password Code";
+            mail.Body = "Your reset code is: " + resetCode;
+
+            smtpClient.Send(mail);
         }
     }
 }

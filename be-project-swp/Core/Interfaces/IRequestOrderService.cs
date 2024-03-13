@@ -5,7 +5,7 @@ namespace be_artwork_sharing_platform.Core.Interfaces
 {
     public interface IRequestOrderService
     {
-        Task SendRequesrOrder(SendRequest sendRequest, string userName_Request, string userId_Receivier, string fullName);
+        Task SendRequesrOrder(SendRequest sendRequest, string userName_Request, string userId_Receivier, string fullName_Sender, string fullName_Receivier);
         IEnumerable<ReceiveRequestDto> GetMineOrderByUserId(string user_Name);
         IEnumerable<RequestOrderDto> GetMineRequestByUserName(string user_Id);
     }

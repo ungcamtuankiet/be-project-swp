@@ -1,11 +1,8 @@
-﻿using be_artwork_sharing_platform.Core.Constancs;
-using be_artwork_sharing_platform.Core.Dtos.Auth;
+﻿using be_artwork_sharing_platform.Core.Dtos.Auth;
 using be_artwork_sharing_platform.Core.Dtos.General;
-using be_artwork_sharing_platform.Core.Dtos.User;
 using be_artwork_sharing_platform.Core.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+using be_project_swp.Core.Dtos.Auth;
+using be_project_swp.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace be_artwork_sharing_platform.Controllers
@@ -106,5 +103,47 @@ namespace be_artwork_sharing_platform.Controllers
                 return Unauthorized("InvalidToken");
             }
         }
+
+/*        [HttpPost]
+        [Route("request-code")]
+        public async Task<IActionResult> RequestResetCode([FromBody] RequestCodeReq req)
+        {
+            try
+            {
+                var user = await _authService.GetUserByEmailAsync(req.Email);
+                if (user == null)
+                {
+                    return NotFound("User not found");
+                }
+                var code = _authService.GenerateCode();
+                await _mailService.SendEmailAsync(req.Email, "Mã xác nhận đổi mật khẩu", $"Mã xác nhận đổi mật khẩu của bạn là: {code}, mã sẽ hết hạn trong 5 phút");
+                return Ok(new GeneralServiceResponseDto()
+                {
+                    IsSucceed = true,
+                    StatusCode = 200,
+                    Message = "Send email successfully"
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }*/
+
+/*        [HttpPost]
+        [Route("forget-password")]
+        public IActionResult ForgotPasswod(string email)
+        {
+            try
+            {
+                string resetCode = _authService.GenerateCode();
+                _authService.SendResetCodeEmail(email, resetCode);
+                return Ok("Reset code sent successfully!");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }*/
     }
 }

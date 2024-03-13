@@ -13,7 +13,6 @@ namespace be_artwork_sharing_platform.Core.Dtos.RequestOrder
         [StringLength(15, ErrorMessage = "Phone number must be 0-15 characters")]
         [RegularExpression(RegexConst.PHONE_NUMBER, ErrorMessage = "Invalid phone number")]
         public string PhoneNumber { get; set; }
-        public string Category_Artwork { get; set; }
         public string Text { get; set; }
     }
 }

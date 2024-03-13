@@ -12,12 +12,15 @@ namespace be_artwork_sharing_platform.Core.Interfaces
         Task<GeneralServiceResponseDto> SeedRoleAsync();
         Task<GeneralServiceResponseDto> RegisterAsync(RegisterDto registerDto);
         Task<LoginServiceResponceDto?> LoginAsync(LoginDto loginDto);
-/*        Task<GeneralServiceResponseDto> UpdateRoleAsync(ClaimsPrincipal User, UpdateRoleDto updateRoleDto);*/
         Task<LoginServiceResponceDto> MeAsync(MeDto meDto);
         Task<string> GetCurrentUserId(string username);
         Task<string> GetCurrentUserName(string username);
         Task<string> GetCurrentFullName(string username);
+        Task<string> GetCurrentFullNameByUserId(string userId);
         Task<string> GetPasswordCurrentUserName(string username);
         Task<bool> GetStatusUser(string username);
+        Task<ApplicationUser?> GetUserByEmailAsync(string email);
+        string GenerateCode();
+        void SendResetCodeEmail(string email, string resetCode);
     }
 }
