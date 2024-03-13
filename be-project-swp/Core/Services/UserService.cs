@@ -4,6 +4,8 @@ using be_artwork_sharing_platform.Core.Entities;
 using be_artwork_sharing_platform.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Mail;
+using System.Net;
 
 namespace be_artwork_sharing_platform.Core.Services
 {
@@ -106,3 +108,4 @@ namespace be_artwork_sharing_platform.Core.Services
         }
     }
 }
+

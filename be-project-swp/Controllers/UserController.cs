@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace be_artwork_sharing_platform.Controllers
 {
     [Route("api/[controller]")]
@@ -147,5 +148,6 @@ namespace be_artwork_sharing_platform.Controllers
                 return BadRequest("Error to change password");
             }
         }
+
     }
 }

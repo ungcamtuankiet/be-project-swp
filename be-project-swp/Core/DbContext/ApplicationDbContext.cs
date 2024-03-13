@@ -1,5 +1,6 @@
 ﻿using be_artwork_sharing_platform.Core.Constancs;
 using be_artwork_sharing_platform.Core.Entities;
+using be_project_swp.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ namespace be_artwork_sharing_platform.Core.DbContext
         public DbSet<ApplicationUser> Users {  get; set; }
         public DbSet<Favourite> Favorites { get; set; }
         public DbSet<RequestOrder> RequestOrders { get; set; }
+        public DbSet<ConfirmationCode> ConfirmationCodes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
