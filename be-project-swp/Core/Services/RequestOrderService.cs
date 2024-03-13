@@ -36,6 +36,7 @@ namespace be_artwork_sharing_platform.Core.Services
             var receivier = _context.RequestOrders.Where(f => f.UserId_Receivier == user_Id)
                 .Select(f => new ReceiveRequestDto
                 {
+                    Id =f.Id,
                     FullName_Sender = f.FullName_Sender,
                     Email_Sender = f.Email,
                     PhoneNo_Sender = f.PhoneNumber,
@@ -52,6 +53,7 @@ namespace be_artwork_sharing_platform.Core.Services
             var request = _context.RequestOrders.Where(f => f.UserName_Sender == user_Name)
                 .Select(f => new RequestOrderDto
                 {
+                    Id = f.Id,
                     FullName_Sender = f.FullName_Sender,
                     FullName_Receivier = f.FullName_Receivier,
                     Email = f.Email,

@@ -2,6 +2,7 @@
 {
     public class RequestOrderDto
     {
+        public long Id { get; set; }
         public string FullName_Sender { get; set; }
         public string FullName_Receivier { get; set; }
         public string Email { get; set; }

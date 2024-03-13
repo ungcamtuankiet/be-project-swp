@@ -1,9 +1,8 @@
 ﻿using be_artwork_sharing_platform.Core.Dtos.Auth;
-using be_artwork_sharing_platform.Core.Dtos.General;
 using be_artwork_sharing_platform.Core.Interfaces;
-using be_project_swp.Core.Dtos.Auth;
-using be_project_swp.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mail;
+using System.Net;
 
 namespace be_artwork_sharing_platform.Controllers
 {
@@ -104,46 +103,74 @@ namespace be_artwork_sharing_platform.Controllers
             }
         }
 
-/*        [HttpPost]
-        [Route("request-code")]
-        public async Task<IActionResult> RequestResetCode([FromBody] RequestCodeReq req)
+        [HttpPost]
+        [Route("forgot-passworda")]
+        public async Task<IActionResult> ForgotPassword(string email)
         {
-            try
+            // Kiểm tra xem email có tồn tại trong cơ sở dữ liệu hay không
+            var user = _authService.GetUserByEmailAsync(email);
+            if (user is null)
             {
-                var user = await _authService.GetUserByEmailAsync(req.Email);
-                if (user == null)
-                {
-                    return NotFound("User not found");
-                }
-                var code = _authService.GenerateCode();
-                await _mailService.SendEmailAsync(req.Email, "Mã xác nhận đổi mật khẩu", $"Mã xác nhận đổi mật khẩu của bạn là: {code}, mã sẽ hết hạn trong 5 phút");
-                return Ok(new GeneralServiceResponseDto()
-                {
-                    IsSucceed = true,
-                    StatusCode = 200,
-                    Message = "Send email successfully"
-                });
+                return NotFound("Email không tồn tại trong hệ thống");
             }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
-        }*/
+            // Nếu không tồn tại, trả về lỗi
+            // Nếu tồn tại, tạo mã code 6 chữ số
+            string verificationCode = GenerateVerificationCode();
 
-/*        [HttpPost]
-        [Route("forget-password")]
-        public IActionResult ForgotPasswod(string email)
+            // Gửi email chứa mã code tới địa chỉ email của người dùng
+            bool isEmailSent = await SendVerificationCodeByEmail(email, verificationCode);
+
+            if (isEmailSent)
+            {
+                return Ok(new { message = "Mã code đã được gửi đến email của bạn." });
+            }
+            else
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new { message = "Có lỗi xảy ra khi gửi email." });
+            }
+        }
+
+        // Hàm tạo mã code 6 chữ số ngẫu nhiên
+        private string GenerateVerificationCode()
+        {
+            Random random = new Random();
+            return random.Next(100000, 999999).ToString();
+        }
+
+        // Hàm gửi email chứa mã code tới địa chỉ email của người dùng
+        private async Task<bool> SendVerificationCodeByEmail(string email, string verificationCode)
         {
             try
             {
-                string resetCode = _authService.GenerateCode();
-                _authService.SendResetCodeEmail(email, resetCode);
-                return Ok("Reset code sent successfully!");
+                string smtpServer = "smtp.gmail.com";
+                int smtpPort = 587; // Port của SMTP server
+                string smtpUsername = "ungcamtuankiet94@gmail.com";
+                string smtpPassword = "Kiet764285199";
+
+
+                MailMessage mailMessage = new MailMessage();
+                mailMessage.From = new MailAddress("ungcamtuankiet94@gmail.com");
+                mailMessage.To.Add(email);
+                mailMessage.Subject = "Password Reset Verification Code";
+                mailMessage.Body = $"Your verification code is: {verificationCode}";
+
+                SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort);
+                smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.EnableSsl = true;
+
+
+                await smtpClient.SendMailAsync(mailMessage);
+                return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return BadRequest(ex);
+                // Xử lý lỗi khi gửi email
+                Console.WriteLine(ex.Message);
+                return false;
             }
-        }*/
+        }
+
+
     }
 }

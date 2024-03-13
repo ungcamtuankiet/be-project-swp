@@ -2,18 +2,21 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace be_project_swp.Core.Dtos.Auth;
-public class RequestCodeReq
+public class ForgetPassword
 {
-    public string Email { get; set; } = null!;
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; }
 }
 
-public class ResetPasswordReq
+public class ResetPasswordModel
 {
-    public string Email { get; set; } = null!;
-    public string Code { get; set; } = null!;
-
     [Required]
-    [StringLength(20, ErrorMessage = "Password must be at least 6 characters", MinimumLength = 6)]
-    [RegularExpression(RegexConst.PASSWORD, ErrorMessage = "Password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number")]
-    public string Password { get; set; } = null!;
+    [DataType(DataType.Password)]
+    public string Password { get; set; }
+    [DataType(DataType.Password)]
+    [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+    public string ConfirmPassword { get; set; }
+    public string Email { get; set; }
+    public string Token { get; set; }
 }
