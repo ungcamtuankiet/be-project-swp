@@ -320,30 +320,5 @@ namespace be_artwork_sharing_platform.Core.Services
                 Roles = roles
             };
         }
-
-        public string GenerateCode()
-        {
-            Random random = new Random();
-            const string chars = "0123456789";
-            return new string(Enumerable.Repeat(chars, 6)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
-
-        public void SendResetCodeEmail(string email, string resetCode)
-        {
-            MailMessage mail = new MailMessage();
-            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com");
-
-            smtpClient.Port = 465;
-            smtpClient.Credentials = new NetworkCredential("ungcamtuankiet94@gmail.com", "Kiet0764285199");
-            smtpClient.EnableSsl = true;
-
-            mail.From = new MailAddress("ungcamtuankiet94@gmail.com");
-            mail.To.Add(email);
-            mail.Subject = "Reset Password Code";
-            mail.Body = "Your reset code is: " + resetCode;
-
-            smtpClient.Send(mail);
-        }
     }
 }

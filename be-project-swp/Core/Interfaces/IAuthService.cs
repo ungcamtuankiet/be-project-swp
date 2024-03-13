@@ -20,7 +20,5 @@ namespace be_artwork_sharing_platform.Core.Interfaces
         Task<string> GetPasswordCurrentUserName(string username);
         Task<bool> GetStatusUser(string username);
         Task<ApplicationUser?> GetUserByEmailAsync(string email);
-        string GenerateCode();
-        void SendResetCodeEmail(string email, string resetCode);
     }
 }

@@ -13,8 +13,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using System.Net.Mail;
-using be_project_swp.Core.Interfaces;
-using be_project_swp.Core.Services;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,6 +75,10 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
         };
     });
+
+//Email
+var emailConfig = builder.Configuration.GetSection("EmailConfiguration");
+builder.Services.AddSingleton(emailConfig);
 
 //Add AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
